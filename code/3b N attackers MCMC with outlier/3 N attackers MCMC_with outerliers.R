@@ -4,7 +4,7 @@
 pacman::p_load("dplyr","tidyr","doBy","MCMCglmm","parallel","coda","fitR")
 
 DATAPATH = "interm"
-OUTPATH = "results/3 N attackers MCMC"
+OUTPATH = "results/3b N attackers MCMC with outlier"
 
 #---- Data
 mydat <- read.table(paste(DATAPATH,"social attack data for Mads 22.05.20_prepped.csv",sep = "/"), sep = ",", header = TRUE)
@@ -85,18 +85,7 @@ mydat <- mydat %>%
 ##---- FINAL RUN
 ####################################
 
-m1.3way <- mclapply(1:3, function(i) {
-  MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
-               random = ~ us(1+timepoint_z):trial,
-               data   = mydat,
-               family = "poisson",
-               prior  = MyPrior,
-               #thin   = 1,burnin = 0,nitt   = 1000,
-               nitt=2500000, thin=2500, burnin=100000,
-               verbose = T)
-}, mc.cores=3)
-
-m1.3way.nestid <- mclapply(1:3, function(i) {
+m1_3.3way.nestid <- mclapply(1:3, function(i) {
   MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
            random = ~ us(1+timepoint_z):trial + nestId,
            data   = mydat,
@@ -107,24 +96,27 @@ m1.3way.nestid <- mclapply(1:3, function(i) {
            verbose = T)
 }, mc.cores=3)
 
-# m1.2way <- MCMCglmm(attackers ~ species-1 + species:preysize_z+ preysize_z*timepoint_z + species:timepoint_z,
-#                     random = ~ us(1+timepoint_z):trial,
-#                     data   = mydat,
-#                     family = "poisson",
-#                     prior  = MyPrior,
-#                     #thin   = 1,burnin = 0,nitt   = 1000,
-#                     nitt=530000, thin=500, burnin=30000,
-#                     verbose = T)
-# 
-# m1.1way <- MCMCglmm(attackers ~ species-1 + preysize_z + timepoint_z,
-#                     random = ~ us(1+timepoint_z):trial,
-#                     data   = mydat,
-#                     family = "poisson",
-#                     prior  = MyPrior,
-#                     #thin   = 1,burnin = 0,nitt   = 1000,
-#                     nitt=530000, thin=500, burnin=30000,
-#                     verbose = T)
+m1_3.2way.nestid <- mclapply(1:3, function(i) {
+  MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+preysize_z:timepoint_z,
+           random = ~ us(1+timepoint_z):trial + nestId,
+           data   = mydat,
+           family = "poisson",
+           prior  = MyPrior.nest,
+           #thin   = 1,burnin = 0,nitt   = 1000,
+           nitt=2500000, thin=2500, burnin=100000,
+           verbose = T)
+}, mc.cores=3)
+
+m1_3.1way.nestid <- mclapply(1:3, function(i) {
+  MCMCglmm(attackers ~ species-1 + preysize_z+timepoint_z,
+           random = ~ us(1+timepoint_z):trial + nestId,
+           data   = mydat,
+           family = "poisson",
+           prior  = MyPrior.nest,
+           #thin   = 1,burnin = 0,nitt   = 1000,
+           nitt=2500000, thin=2500, burnin=100000,
+           verbose = T)
+}, mc.cores=3)
 
 
-
-save.image(paste(OUTPATH,"/", "N attackers WITH outliers.RData", sep = ""))
+save.image(paste(OUTPATH,"/", "N attackers WITH outliers.nest.RData", sep = ""))
