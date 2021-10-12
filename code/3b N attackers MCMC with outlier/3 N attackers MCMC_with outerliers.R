@@ -18,9 +18,9 @@ MyPrior <- list(
 MyPrior.nest <- list(
   R=list(V = diag(1), nu=0.002, fix = FALSE),
   G=list(G1=list(V        = diag(2),
-                 nu        = 1.002)),
+                 nu        = 1.002),
          G2=list(V        = diag(1),
-                 nu        = 0.002))
+                 nu        = 0.002)))
 
 ####################################
 ##---- Filtering (Keep minor at this stage)
