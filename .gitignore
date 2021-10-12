@@ -1,4 +1,9 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
 .Ruserdata
+.DS_Store
+/input
+/results
+/docs
+/interm
