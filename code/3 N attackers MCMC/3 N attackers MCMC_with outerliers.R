@@ -1,7 +1,7 @@
 #30/06/20
 #Mads F. Schou
 
-pacman::p_load("dplyr","tidyr","pedantics","doBy","MCMCglmm","parallel","coda","fitR")
+pacman::p_load("dplyr","tidyr","doBy","MCMCglmm","parallel","coda","fitR")
 
 DATAPATH = "interm"
 OUTPATH = "results/3 N attackers MCMC"
@@ -9,11 +9,18 @@ OUTPATH = "results/3 N attackers MCMC"
 #---- Data
 mydat <- read.table(paste(DATAPATH,"social attack data for Mads 22.05.20_prepped.csv",sep = "/"), sep = ",", header = TRUE)
 
-#---- Prior
+#---- Priors
 MyPrior <- list(
   R=list(V = diag(1), nu=0.002, fix = FALSE),
   G=list(G1=list(V        = diag(2),
                  nu        = 1.002)))
+
+MyPrior.nest <- list(
+  R=list(V = diag(1), nu=0.002, fix = FALSE),
+  G=list(G1=list(V        = diag(2),
+                 nu        = 1.002)),
+         G2=list(V        = diag(1),
+                 nu        = 0.002))
 
 ####################################
 ##---- Filtering (Keep minor at this stage)
@@ -31,7 +38,6 @@ mydat <- mydat %>%
   mutate(preysize_z = scale(preysize)[,1]) %>%
   mutate(timepoint_z = scale(timepoint)[,1]) %>%
   mutate_at(c("species","species2","nestId","trial"), list(~factor(.)))
-  
 
 ####################################
 ##---- TEST RUN
@@ -79,7 +85,8 @@ mydat <- mydat %>%
 ##---- FINAL RUN
 ####################################
 
-m1.3way <- MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
+m1.3way <- mclapply(1:3, function(i) {
+  MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
                random = ~ us(1+timepoint_z):trial,
                data   = mydat,
                family = "poisson",
@@ -87,6 +94,18 @@ m1.3way <- MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysiz
                #thin   = 1,burnin = 0,nitt   = 1000,
                nitt=2500000, thin=2500, burnin=100000,
                verbose = T)
+}, mc.cores=3)
+
+m1.3way <- mclapply(1:3, function(i) {
+  MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
+           random = ~ us(1+timepoint_z):trial + nestId,
+           data   = mydat,
+           family = "poisson",
+           prior  = MyPrior.nest,
+           #thin   = 1,burnin = 0,nitt   = 1000,
+           nitt=2500000, thin=2500, burnin=100000,
+           verbose = T)
+}, mc.cores=3)
 
 # m1.2way <- MCMCglmm(attackers ~ species-1 + species:preysize_z+ preysize_z*timepoint_z + species:timepoint_z,
 #                     random = ~ us(1+timepoint_z):trial,
