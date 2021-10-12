@@ -11,8 +11,8 @@ pacman::p_load("dplyr","tidyr","pedantics","doBy","MCMCglmm","parallel","coda","
 
 
 #Load primary analysis
-PathToModel = "Analyses/3 N attackers MCMC/"
-FileName = "N attackers no outliers.RData"
+PathToModel = "code/3 N attackers MCMC/"
+FileName = "N attackers no outliers.nest.RData"
 PathOutput = "results/"
 #Load run
 load(paste(PathToModel,FileName, sep = ""))
