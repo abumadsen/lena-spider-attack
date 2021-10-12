@@ -8,11 +8,11 @@ source("https://raw.githubusercontent.com/abumadsen/custom-R-functions/main/MCMC
 #1. Model Diagnostics
 #2. Report Results
 
-PathToModel = "code/3 N attackers MCMC/"
+PathToModel = "code/3b N attackers MCMC with outlier/"
 FileName = "N attackers no outliers.nest.RData"
 #Load run
 load(paste(PathToModel,FileName, sep = ""))
-PathOutput = "results/3 N attackers MCMC/with-nest/"
+PathOutput = "results/3b N attackers MCMC with outlier/"
 
 #If one:
 #m1 <- m1.3way.nest
@@ -80,7 +80,7 @@ dev.off()
 #######################################
 
 #Open workbook
-OpenWorkBookMCMCglmm(title = "Table S1: Results from analysis of the number of attackers", sheetname = "Results")
+OpenWorkBookMCMCglmm(title = "Table S2: Results from analysis of the number of attackers with outlier trial included", sheetname = "Results")
 #Add results from Fixed, Random and Correlations
 MyModel <- m1
 FixedOut <- ReportFixedMCMC(MyModel, remove = "")
@@ -114,4 +114,4 @@ writeData(workbook, "Results", MyCont3way, startCol = 1, startRow = nrow(FixedOu
 
 #openXL(workbook)
 #Print
-saveWorkbook(workbook, file= paste("results/","Table S1 Nattackers_withnest.xlsx",sep = ""),overwrite = TRUE)
+saveWorkbook(workbook, file= paste("results/","Table S2 Nattackers_withnest_withoutliers.xlsx",sep = ""),overwrite = TRUE)
