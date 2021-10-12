@@ -1,11 +1,10 @@
 #30/06/20
 #Mads F. Schou
 
-rm(list = ls(all = TRUE))
 pacman::p_load("dplyr","tidyr","pedantics","doBy","MCMCglmm","parallel","coda","fitR")
 
-DATAPATH = "Temp"
-OUTPATH = "Analyses/3 N attackers MCMC"
+DATAPATH = "interm"
+OUTPATH = "results/3 N attackers MCMC"
 
 #---- Data
 mydat <- read.table(paste(DATAPATH,"social attack data for Mads 22.05.20_prepped.csv",sep = "/"), sep = ",", header = TRUE)
@@ -31,7 +30,7 @@ MyPrior <- list(
 mydat <- mydat %>%
   mutate(preysize_z = scale(preysize)[,1]) %>%
   mutate(timepoint_z = scale(timepoint)[,1]) %>%
-  mutate_at(c("species","species2","nestId","trial"), funs(factor(.)))
+  mutate_at(c("species","species2","nestId","trial"), list(~factor(.)))
   
 
 ####################################
