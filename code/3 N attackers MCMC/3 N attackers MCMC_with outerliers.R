@@ -96,7 +96,7 @@ m1.3way <- mclapply(1:3, function(i) {
                verbose = T)
 }, mc.cores=3)
 
-m1.3way <- mclapply(1:3, function(i) {
+m1.3way.nestid <- mclapply(1:3, function(i) {
   MCMCglmm(attackers ~ species-1 + species:timepoint_z+ species:preysize_z+species:preysize_z:timepoint_z,
            random = ~ us(1+timepoint_z):trial + nestId,
            data   = mydat,
