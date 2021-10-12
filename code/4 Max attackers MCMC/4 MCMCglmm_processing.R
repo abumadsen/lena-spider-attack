@@ -2,8 +2,8 @@
 #Mads F. Schou
 #Example of data processing of output from MCMCglmm
 
-rm(list = ls())
 pacman::p_load("reshape","openxlsx","MCMCglmm")
+source("https://raw.githubusercontent.com/abumadsen/custom-R-functions/main/MCMCglmm_processing_functions.R")
 
 #1. Model Diagnostics
 #2. Report Results
@@ -75,9 +75,6 @@ dev.off()
 #######################################
 ###--- 2. Report Results
 #######################################
-
-source("/Users/abumadsen/Documents/Statistics/MCMCglmm/MCMCglmm_processing_functions.R")
-#Settings for the workbook is defined in script loaded above
 
 #Open workbook
 OpenWorkBookMCMCglmm(title = "Table S1: Results from analysis of maximum number of spiders attacking prey item", sheetname = "Results")
