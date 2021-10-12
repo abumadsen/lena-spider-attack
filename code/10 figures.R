@@ -28,6 +28,7 @@ NEWDATmim <- expand.grid(species = "mimosarum", preysize_z = seq(min(mydat$preys
 
 NEWDAT <- rbind(NEWDATdum, NEWDATsar,NEWDATmim)
 NEWDAT$trial = 0
+NEWDAT$nestId = 0
 NEWDAT$attackers = 0
 
 NEWDAT$preysize <- NEWDAT$preysize_z * attr(scale(mydat$preysize), 'scaled:scale') + attr(scale(mydat$preysize), 'scaled:center')
@@ -221,10 +222,10 @@ dev.off()
 pdf("results/Fig S1.pdf", family = "Times", width = 6.7, height = 5)
 
 mydat2 <- unique(mydat[,c("trial","species2","preysize")])
-
+mydat2$species3 <- as.character(mydat2$species2)
 ggplot(mydat2, aes(x = preysize)) +
-  geom_histogram(binwnestIdth = 1) +
-  facet_wrap(.~species2, labeller = label_bquote(col = italic(.(as.character(species2))))) +
+  geom_histogram(binwidth = 1) +
+  facet_wrap(.~species3, labeller = label_bquote(col = italic(.(species3)))) +
   xlab("Preyzise (mm)") + 
   ylab("Number of trials") +
   theme_light()
