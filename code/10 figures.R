@@ -36,7 +36,8 @@ NEWDAT$timepoint <- NEWDAT$timepoint_z * attr(scale(mydat$timepoint), 'scaled:sc
 MyFit <- predict(m1.3wayPlot, newdata = NEWDAT, type = "response", interval ="confidence")
 NEWDAT <- cbind(NEWDAT,MyFit)
 
-pdf("results/Fig1.pdf", family = "Times", width = 6.7, height = 6.7)
+#pdf("results/Fig1.pdf", width = 6.7, height = 6.7)
+jpeg("results/Fig1.jpeg", width = 6.7, height = 6.7,quality = 500, units = "in", res = 500)
 
 par(mfrow=c(2,2), mar = c(2.9,3,4,0.2), xpd = TRUE)
 
@@ -106,9 +107,10 @@ for(i in unique(NEWDAT$timepoint)){
 
 dev.off()
 
-#change to pdf
-tempFig<-image_read_pdf("results/Fig1.pdf")
-image_write(tempFig, "results/Fig1.png", format = "png")
+# #change to png
+# tempFig<-image_read_pdf("results/Fig1.pdf")
+# image_write(tempFig, "results/Fig1.png", format = "png")
+# ggsave(tempFig, file="results/Fig S1.png")
 
 
 #######################################
@@ -229,7 +231,7 @@ mydat2$species3 <- as.character(mydat2$species2)
 FigS1 <- ggplot(mydat2, aes(x = preysize)) +
   geom_histogram(binwidth = 1) +
   facet_wrap(.~species3, labeller = label_bquote(col = italic(.(species3)))) +
-  xlab("Preyzise (mm)") + 
+  xlab("Prey size (mm)") + 
   ylab("Number of trials") +
   theme_light()
 #dev.off()
