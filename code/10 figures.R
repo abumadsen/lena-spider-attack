@@ -2,13 +2,11 @@
 #Mads F. Schou
 #Graphs of prey size preferences - Attacking spiders
 
-rm(list = ls(all = TRUE))
-pacman::p_load("dplyr","tidyr","pedantics","doBy","MCMCglmm","parallel","coda","fitR","ggplot2","Hmisc")
+pacman::p_load("dplyr","tidyr","pedantics","doBy","MCMCglmm","parallel","coda","ggplot2","Hmisc","magick")
 
 # Fig. 1: Change in # spiders over time + preysize
 # Fig. 2: Sole effect of time
 # Fig. S1: Histogram of preysize distribution
-
 
 #Load primary analysis
 PathToModel = "code/3 N attackers MCMC/"
@@ -107,6 +105,10 @@ for(i in unique(NEWDAT$timepoint)){
 }
 
 dev.off()
+
+#change to pdf
+tempFig<-image_read_pdf("results/Fig1.pdf")
+image_write(tempFig, "results/Fig1.png", format = "png")
 
 
 #######################################
@@ -219,18 +221,20 @@ dev.off()
 ###--- Fig. S1: Histogram of preysize distribution
 #######################################
 
-pdf("results/Fig S1.pdf", family = "Times", width = 6.7, height = 5)
+#png("results/Fig S1.png", family = "Times", width = 6.7, height = 5)
 
 mydat2 <- unique(mydat[,c("trial","species2","preysize")])
 mydat2$species3 <- as.character(mydat2$species2)
-ggplot(mydat2, aes(x = preysize)) +
+
+FigS1 <- ggplot(mydat2, aes(x = preysize)) +
   geom_histogram(binwidth = 1) +
   facet_wrap(.~species3, labeller = label_bquote(col = italic(.(species3)))) +
   xlab("Preyzise (mm)") + 
   ylab("Number of trials") +
   theme_light()
-dev.off()
+#dev.off()
 
+ggsave(FigS1, file="results/Fig S1.png" ,width = 6.7, height = 5)
 
 
 
