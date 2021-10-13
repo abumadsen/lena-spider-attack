@@ -9,7 +9,7 @@ source("https://raw.githubusercontent.com/abumadsen/custom-R-functions/main/MCMC
 #2. Report Results
 
 PathToModel = "code/3b N attackers MCMC with outlier/"
-FileName = "N attackers no outliers.nest.RData"
+FileName = "N attackers WITH outliers.RData"
 #Load run
 load(paste(PathToModel,FileName, sep = ""))
 PathOutput = "results/3b N attackers MCMC with outlier/"
