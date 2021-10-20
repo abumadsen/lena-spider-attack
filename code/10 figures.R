@@ -240,3 +240,68 @@ ggsave(FigS1, file="results/Fig S1.png" ,width = 6.7, height = 5)
 
 
 
+
+#######################################
+###--- Fig. 3: Time to attack
+#######################################
+
+#Load primary analysis
+PathToModel = "code/5 Time to attack/"
+FileName = "Time to attack.RData"
+PathOutput = "results/"
+#Load run
+load(paste(PathToModel,FileName, sep = ""))
+
+
+
+#Data for fitting
+NEWDATdum <- expand.grid(species = "dumicola", preysize_z = seq(min(mydat$preysize_z[mydat$species == "dumicola"]),max(mydat$preysize_z[mydat$species == "dumicola"])-0.3,0.05))
+NEWDATsar <- expand.grid(species = "sarasinorum", preysize_z = seq(min(mydat$preysize_z[mydat$species == "sarasinorum"]),max(mydat$preysize_z[mydat$species == "sarasinorum"])-0.3,0.05))
+NEWDATmim <- expand.grid(species = "mimosarum", preysize_z = seq(min(mydat$preysize_z[mydat$species == "mimosarum"]),max(mydat$preysize_z[mydat$species == "mimosarum"])-0.3,0.05))
+
+NEWDAT <- rbind(NEWDATdum, NEWDATsar,NEWDATmim)
+NEWDAT$nestId = 0
+NEWDAT$LatencyToAttackSec = 0
+
+NEWDAT$preysize <- NEWDAT$preysize_z * attr(scale(mydat$preysize), 'scaled:scale') + attr(scale(mydat$preysize), 'scaled:center')
+
+MyFit <- predict(m1_3.1way.nestid[[1]], newdata = NEWDAT, type = "response", interval ="confidence")
+NEWDAT <- cbind(NEWDAT,MyFit)
+
+#pdf("results/Fig1.pdf", width = 6.7, height = 6.7)
+jpeg("results/Fig3.jpeg", width = 6.7, height = 6.7,quality = 500, units = "in", res = 500)
+
+par(mfrow=c(1,1), mar = c(2.9,3,0.2,0.2), xpd = TRUE)
+
+mycex = 1.2
+
+dumiCol <- rgb(150,150,190,125, maxColorValue = 255)
+saraCol <- rgb(150,190,150,125, maxColorValue = 255)
+mimoCol <- rgb(190,150,150,125, maxColorValue = 255)
+
+plot(NEWDAT$preysize[NEWDAT$species == "dumicola"], NEWDAT$fit[NEWDAT$species == "dumicola"], type = "l", lwd = 1.5, col = "white", ylim = c(0,1200), ylab = "Time to attack (min)", xlab = "Preysize (mm)", cex.main = 0.7, xlim = c(0,65), las = 1, mgp = c(1.4,0.4,0), tck = -0.02,cex.lab = mycex, cex.axis = mycex, yaxt = "n")
+  
+legend("topleft", legend = c(expression(italic("S. dumicola")), expression(italic("S. sarasinorum")), expression(italic("S. mimosarum"))), lty = c(1,1,1), col = c("black","black","black"), pt.bg = c(rgb(150,150,190,255, maxColorValue = 255),rgb(150,190,150,255, maxColorValue = 255),rgb(190,150,150,255, maxColorValue = 255)), bty = "n", cex = mycex-0.1, pch = c(22,23,21))
+axis(side = 2, at = seq(0,1200,120), labels = seq(0,1200,120)/60, cex.axis = mycex, las = 1, tck = -0.02, mgp = c(1.4,0.4,0))
+  
+polygon(c(NEWDAT$preysize[NEWDAT$species == "dumicola"], rev(NEWDAT$preysize[NEWDAT$species == "dumicola"])), c(NEWDAT$lwr[NEWDAT$species == "dumicola"], rev(NEWDAT$upr[NEWDAT$species == "dumicola"])), border = FALSE, col = dumiCol)
+polygon(c(NEWDAT$preysize[NEWDAT$species == "mimosarum"], rev(NEWDAT$preysize[NEWDAT$species == "mimosarum"])), c(NEWDAT$lwr[NEWDAT$species == "mimosarum"], rev(NEWDAT$upr[NEWDAT$species == "mimosarum"])), border = FALSE, col =mimoCol)
+polygon(c(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], rev(NEWDAT$preysize[NEWDAT$species == "sarasinorum"])), c(NEWDAT$lwr[NEWDAT$species == "sarasinorum"], rev(NEWDAT$upr[NEWDAT$species == "sarasinorum"])), border = FALSE, col = saraCol)
+
+lines(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], NEWDAT$fit[NEWDAT$species == "sarasinorum"], type = "l", col = "black")
+lines(NEWDAT$preysize[NEWDAT$species == "mimosarum"], NEWDAT$fit[NEWDAT$species == "mimosarum"], type = "l", col = "black")
+lines(NEWDAT$preysize[NEWDAT$species == "dumicola"], NEWDAT$fit[NEWDAT$species == "dumicola"], type = "l", col = "black")
+
+  
+#--------------		Plotting observed
+
+points(x = jitter(mydat$preysize[mydat$species == "dumicola"]), y = mydat$LatencyToAttackSec[mydat$species == "dumicola"], pch = 22, col = "black",bg = dumiCol, cex = mycex-0.2)
+points(x = jitter(mydat$preysize[mydat$species == "sarasinorum"]), y = mydat$LatencyToAttackSec[mydat$species == "sarasinorum"], pch = 23, col = "black",bg = saraCol, cex = mycex-0.2)
+points(x = jitter(mydat$preysize[mydat$species == "mimosarum"]), y = mydat$LatencyToAttackSec[mydat$species == "mimosarum"], pch = 21, col = "black",bg = mimoCol, cex = mycex-0.2)
+
+dev.off()
+
+
+# ggplot(data = mydat, aes(x = preysize, y = LatencyToAttackSec/60), group = species) +
+#   stat_smooth(aes(colour = species), method = "lm") +
+#   geom_point(aes(colour = species))
