@@ -120,5 +120,15 @@ m1_3.1way.nestid <- mclapply(1:3, function(i) {
            verbose = T)
 }, mc.cores=3)
 
+m1_3.0way.nestid <- mclapply(1:3, function(i) {
+  MCMCglmm(LatencyToAttackSec ~ species-1,
+           random = ~ nestId,
+           data   = mydat,
+           family = "poisson",
+           prior  = MyPrior,
+           #thin   = 1,burnin = 0,nitt   = 1000,
+           nitt=2500000, thin=2500, burnin=100000,
+           verbose = T)
+}, mc.cores=3)
 
 save.image(paste(OUTPATH,"/", "Time to attack.RData", sep = ""))
