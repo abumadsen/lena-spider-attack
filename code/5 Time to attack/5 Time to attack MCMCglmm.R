@@ -30,6 +30,7 @@ MyPrior <- list(
 mydat <- unique(mydat[, c("species","nestId","preysize","LatencyToAttackSec","trial","species2")])
 mydat <- mydat[!is.na(mydat$LatencyToAttackSec),]
 nrow(mydat) #192
+quantile(mydat$LatencyToAttackSec,0.75)
 
 #Confirm that only one obsevation per trial
 mydat$trial.nest <- paste(mydat$trial,mydat$nestId, sep = "_")
