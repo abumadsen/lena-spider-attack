@@ -269,9 +269,9 @@ MyFit <- predict(m1_3.1way.nestid[[1]], newdata = NEWDAT, type = "response", int
 NEWDAT <- cbind(NEWDAT,MyFit)
 
 #pdf("results/Fig1.pdf", width = 6.7, height = 6.7)
-jpeg("results/Fig3.jpeg", width = 6.7, height = 6.7,quality = 500, units = "in", res = 500)
+jpeg("results/Fig3.jpeg", width = 6.7, height = 5,quality = 500, units = "in", res = 500)
 
-par(mfrow=c(1,1), mar = c(2.9,3,0.2,0.2), xpd = TRUE)
+par(mfrow=c(1,3), mar = c(2.9,3,0.2,0.0), xpd = TRUE)
 
 mycex = 1.2
 
@@ -279,25 +279,27 @@ dumiCol <- rgb(150,150,190,125, maxColorValue = 255)
 saraCol <- rgb(150,190,150,125, maxColorValue = 255)
 mimoCol <- rgb(190,150,150,125, maxColorValue = 255)
 
-plot(NEWDAT$preysize[NEWDAT$species == "dumicola"], NEWDAT$fit[NEWDAT$species == "dumicola"], type = "l", lwd = 1.5, col = "white", ylim = c(0,1200), ylab = "Time to attack (min)", xlab = "Preysize (mm)", cex.main = 0.7, xlim = c(0,65), las = 1, mgp = c(1.4,0.4,0), tck = -0.02,cex.lab = mycex, cex.axis = mycex, yaxt = "n")
-  
-legend("topleft", legend = c(expression(italic("S. dumicola")), expression(italic("S. sarasinorum")), expression(italic("S. mimosarum"))), lty = c(1,1,1), col = c("black","black","black"), pt.bg = c(rgb(150,150,190,255, maxColorValue = 255),rgb(150,190,150,255, maxColorValue = 255),rgb(190,150,150,255, maxColorValue = 255)), bty = "n", cex = mycex-0.1, pch = c(22,23,21))
-axis(side = 2, at = seq(0,1200,120), labels = seq(0,1200,120)/60, cex.axis = mycex, las = 1, tck = -0.02, mgp = c(1.4,0.4,0))
-  
+plot(NEWDAT$preysize[NEWDAT$species == "dumicola"], NEWDAT$fit[NEWDAT$species == "dumicola"], type = "l", lwd = 1.5, col = "white", ylim = c(0,1200), ylab = "Time to attack (min)", xlab = "Preysize (mm)", cex.main = 0.7, xlim = c(0,65), las = 1, mgp = c(1.6,0.5,0), tck = -0.02,cex.lab = mycex, cex.axis = mycex, yaxt = "n")
 polygon(c(NEWDAT$preysize[NEWDAT$species == "dumicola"], rev(NEWDAT$preysize[NEWDAT$species == "dumicola"])), c(NEWDAT$lwr[NEWDAT$species == "dumicola"], rev(NEWDAT$upr[NEWDAT$species == "dumicola"])), border = FALSE, col = dumiCol)
-polygon(c(NEWDAT$preysize[NEWDAT$species == "mimosarum"], rev(NEWDAT$preysize[NEWDAT$species == "mimosarum"])), c(NEWDAT$lwr[NEWDAT$species == "mimosarum"], rev(NEWDAT$upr[NEWDAT$species == "mimosarum"])), border = FALSE, col =mimoCol)
-polygon(c(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], rev(NEWDAT$preysize[NEWDAT$species == "sarasinorum"])), c(NEWDAT$lwr[NEWDAT$species == "sarasinorum"], rev(NEWDAT$upr[NEWDAT$species == "sarasinorum"])), border = FALSE, col = saraCol)
-
-lines(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], NEWDAT$fit[NEWDAT$species == "sarasinorum"], type = "l", col = "black")
-lines(NEWDAT$preysize[NEWDAT$species == "mimosarum"], NEWDAT$fit[NEWDAT$species == "mimosarum"], type = "l", col = "black")
 lines(NEWDAT$preysize[NEWDAT$species == "dumicola"], NEWDAT$fit[NEWDAT$species == "dumicola"], type = "l", col = "black")
-
-  
-#--------------		Plotting observed
-
 points(x = jitter(mydat$preysize[mydat$species == "dumicola"]), y = mydat$LatencyToAttackSec[mydat$species == "dumicola"], pch = 22, col = "black",bg = dumiCol, cex = mycex-0.2)
-points(x = jitter(mydat$preysize[mydat$species == "sarasinorum"]), y = mydat$LatencyToAttackSec[mydat$species == "sarasinorum"], pch = 23, col = "black",bg = saraCol, cex = mycex-0.2)
+axis(side = 2, at = seq(0,1200,120), labels = seq(0,1200,120)/60, cex.axis = mycex, las = 1, tck = -0.02, mgp = c(1.4,0.4,0))
+mtext(expression(italic("S. dumicola")), side = 3, line = -2)
+
+
+plot(NEWDAT$preysize[NEWDAT$species == "mimosarum"], NEWDAT$fit[NEWDAT$species == "mimosarum"], type = "l", lwd = 1.5, col = "white", ylim = c(0,1200), ylab = "Time to attack (min)", xlab = "Preysize (mm)", cex.main = 0.7, xlim = c(0,65), las = 1, mgp = c(1.6,0.5,0), tck = -0.02,cex.lab = mycex, cex.axis = mycex, yaxt = "n")
+polygon(c(NEWDAT$preysize[NEWDAT$species == "mimosarum"], rev(NEWDAT$preysize[NEWDAT$species == "mimosarum"])), c(NEWDAT$lwr[NEWDAT$species == "mimosarum"], rev(NEWDAT$upr[NEWDAT$species == "mimosarum"])), border = FALSE, col =mimoCol)
+lines(NEWDAT$preysize[NEWDAT$species == "mimosarum"], NEWDAT$fit[NEWDAT$species == "mimosarum"], type = "l", col = "black")
 points(x = jitter(mydat$preysize[mydat$species == "mimosarum"]), y = mydat$LatencyToAttackSec[mydat$species == "mimosarum"], pch = 21, col = "black",bg = mimoCol, cex = mycex-0.2)
+axis(side = 2, at = seq(0,1200,120), labels = seq(0,1200,120)/60, cex.axis = mycex, las = 1, tck = -0.02, mgp = c(1.4,0.4,0))
+mtext(expression(italic("S. mimosarum")), side = 3, line = -2)
+
+plot(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], NEWDAT$fit[NEWDAT$species == "sarasinorum"], type = "l", lwd = 1.5, col = "white", ylim = c(0,1200), ylab = "Time to attack (min)", xlab = "Preysize (mm)", cex.main = 0.7, xlim = c(0,65), las = 1, mgp = c(1.6,0.5,0), tck = -0.02,cex.lab = mycex, cex.axis = mycex, yaxt = "n")
+polygon(c(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], rev(NEWDAT$preysize[NEWDAT$species == "sarasinorum"])), c(NEWDAT$lwr[NEWDAT$species == "sarasinorum"], rev(NEWDAT$upr[NEWDAT$species == "sarasinorum"])), border = FALSE, col = saraCol)
+lines(NEWDAT$preysize[NEWDAT$species == "sarasinorum"], NEWDAT$fit[NEWDAT$species == "sarasinorum"], type = "l", col = "black")
+points(x = jitter(mydat$preysize[mydat$species == "sarasinorum"]), y = mydat$LatencyToAttackSec[mydat$species == "sarasinorum"], pch = 23, col = "black",bg = saraCol, cex = mycex-0.2)
+axis(side = 2, at = seq(0,1200,120), labels = seq(0,1200,120)/60, cex.axis = mycex, las = 1, tck = -0.02, mgp = c(1.4,0.4,0))
+mtext(expression(italic("S. sarasinorum")), side = 3, line = -2)
 
 dev.off()
 
